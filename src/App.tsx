@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 import "./App.css";
 
@@ -10,19 +10,24 @@ type TodoItem = {
 
 const Todos = () => {
   const [todos, setTodos] = useState<TodoItem[]>([]);
+  const [task, setTask] = useState<string>("");
+  const inputRef: React.RefObject<HTMLInputElement> = useRef(null);
 
-  const handleClick = () => {
-    const input: HTMLInputElement | null = document.querySelector("input");
-    if (!input) {
-      return;
-    }
+  const handleTask = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTask(event.currentTarget.value);
+  };
 
-    const inputText: string = input.value;
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!task) return;
+
     setTodos([
       ...todos,
-      { id: new Date().getTime().toString(), text: inputText, checked: false },
+      { id: new Date().getTime().toString(), text: task, checked: false },
     ]);
-    input.value = "";
+
+    setTask("");
+    inputRef.current?.focus();
   };
 
   const setChecked = (id: string) => {
@@ -45,10 +50,10 @@ const Todos = () => {
     <>
       <h1>Todo App</h1>
 
-      <div className="taskInput">
-        <input type="text" />
-        <button onClick={handleClick}>Add</button>
-      </div>
+      <form className="taskInput" onSubmit={handleSubmit}>
+        <input type="text" value={task} onChange={handleTask} ref={inputRef} />
+        <button type="submit">Add</button>
+      </form>
 
       <div className="todoList">
         {todos.map((todo, index) => (
