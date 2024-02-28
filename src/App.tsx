@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 import "./App.css";
 
@@ -11,6 +11,7 @@ type TodoItem = {
 const Todos = () => {
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const [task, setTask] = useState<string>("");
+  const inputRef: React.RefObject<HTMLInputElement> = useRef(null);
 
   const handleTask = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTask(event.currentTarget.value);
@@ -24,7 +25,9 @@ const Todos = () => {
       ...todos,
       { id: new Date().getTime().toString(), text: task, checked: false },
     ]);
+
     setTask("");
+    inputRef.current?.focus();
   };
 
   const setChecked = (id: string) => {
@@ -48,7 +51,7 @@ const Todos = () => {
       <h1>Todo App</h1>
 
       <form className="taskInput" onSubmit={handleSubmit}>
-        <input type="text" value={task} onChange={handleTask} />
+        <input type="text" value={task} onChange={handleTask} ref={inputRef} />
         <button type="submit">Add</button>
       </form>
 
