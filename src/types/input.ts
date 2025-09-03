@@ -1,6 +1,5 @@
-import React from "react"
+import type { RefObject } from "react";
 
 export type TextInputProps = {
-    title: string
-    setTitle: React.Dispatch<React.SetStateAction<string>>
+    inputElement: RefObject<HTMLInputElement | null>
 };
